@@ -19,8 +19,6 @@ class ExampleScene extends Scene {
     this.rec.color = "#00f";
 
     this.background = "#fff";
-
-    this.addComponents(this.text1, this.rec);
   }
 
   update(frame) {
