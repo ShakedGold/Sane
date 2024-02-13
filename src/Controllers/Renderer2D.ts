@@ -7,6 +7,9 @@ import Scene from "./Scene";
 import { RendererOptions } from "../Interfaces";
 
 class Renderer2D {
+  /**
+   * The scene to be rendered.
+   */
   public scene: Scene;
   private options: RendererOptions;
   private canvas: Canvas;
@@ -22,6 +25,9 @@ class Renderer2D {
     this.options = { ...this.options, ...options };
   }
 
+  /**
+   * Render the scene to frames and save them to the "frames" directory.
+   */
   render() {
     const frames = this.options.durationS * this.options.fps;
 
@@ -45,8 +51,11 @@ class Renderer2D {
     bar.stop();
     console.log("Frames rendered\n");
   }
+
+  /**
+   * Create a video from the frames in the "frames directory".
+   */
   save() {
-    const frames = this.options.durationS * this.options.fps;
     const bar = new cliProgress.SingleBar({
       format: "Creating video [{bar}] {percentage}% | ETA: {eta}s"
     }, cliProgress.Presets.shades_classic);
@@ -70,19 +79,7 @@ class Renderer2D {
         console.log("Video created");
 
         if (this.options.cleanup) {
-          const barCleanup = new cliProgress.SingleBar({
-            format: "Cleaning up [{bar}] {percentage}% | ETA: {eta}s | {value}/{total} frames"
-          }, cliProgress.Presets.shades_classic);
-          barCleanup.start(frames + 1, 0);
-          for (let i = 0; i < frames; i++) {
-            // remove frames
-            unlinkSync(`frames/frame${String(i + 1)}.png`);
-            barCleanup.update(i + 1);
-          }
-          // remove frames directory
-          rmdirSync("frames");
-          barCleanup.update(frames + 1);
-          barCleanup.stop();
+          this.cleanup();
         }
       })
       .on("error", (err) => {
@@ -93,6 +90,27 @@ class Renderer2D {
         bar.update(percent);
       })
       .save(`output/${this.options.name}.mp4`);
+  }
+
+  /**
+   * Remove the frames and frames directory.
+   */
+  cleanup() {
+    const frames = this.options.durationS * this.options.fps;
+
+    const barCleanup = new cliProgress.SingleBar({
+      format: "Cleaning up [{bar}] {percentage}% | ETA: {eta}s | {value}/{total} frames"
+    }, cliProgress.Presets.shades_classic);
+    barCleanup.start(frames + 1, 0);
+    for (let i = 0; i < frames; i++) {
+      // remove frames
+      unlinkSync(`frames/frame${String(i + 1)}.png`);
+      barCleanup.update(i + 1);
+    }
+    // remove frames directory
+    rmdirSync("frames");
+    barCleanup.update(frames + 1);
+    barCleanup.stop();
   }
 }
 
