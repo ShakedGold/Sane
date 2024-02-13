@@ -50,7 +50,7 @@ renderer.render();
 renderer.save();
 ```
 ## Result
-![](examples/example1.mp4)
+![](https://i.imgur.com/hkS4cEb.gif)
 
 # Building & Running
 
