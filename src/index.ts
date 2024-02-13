@@ -1,2 +1,3 @@
-export { Text, Rectangle } from "./Components";
-export { Renderer2D, Scene } from "./Controllers";
+export * from "./Components";
+export * from "./Controllers";
+export * from "./Interfaces";
